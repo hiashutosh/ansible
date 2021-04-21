@@ -1,0 +1,5 @@
+- name: Install PHP Extensions
+  yum: name={{ item }} update_cache=yes state=latest
+  loop: "{{ php_modules }}"
+- name: Start httpd service
+  systemd: name=httpd state=started

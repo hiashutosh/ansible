@@ -1,0 +1,4 @@
+- name: install pymysql
+  command: "sudo yum install mysql-devel python-devel MySQL-python python3-PyMySQL -y "
+ 
+
