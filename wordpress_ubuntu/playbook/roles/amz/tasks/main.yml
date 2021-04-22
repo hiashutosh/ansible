@@ -1,6 +1,0 @@
-    - name: Upgrade amazonec2
-      action: yum name=amazon-linux-extras state=present
-    - name: Enable amazon-extras
-      shell: "amazon-linux-extras enable {{item}}"
-      with_items: [ ' php7.4' ]
-
