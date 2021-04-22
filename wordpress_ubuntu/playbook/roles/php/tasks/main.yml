@@ -1,11 +1,10 @@
-#- name: Install PHP Extensions
-#  apt: name= '{{item}}' update_cache=yes state=present
-#  with_items: [ 'php', 'php-mysql', 'php-gd', 'php-cli', 'php-common' ]
-          
-
 - name: Install PHP Extensions
-  command: " apt install php php-mysql php-gd php-cli php-common -y"
-  become: yes
+  apt: name={{ item }} update_cache=yes state=latest
+  loop: "{{ php_modules }}"
+
+#- name: Install PHP Extensions
+#  command: " apt install php php-mysql php-gd php-cli php-common -y"
+#  become: yes
 
 
 

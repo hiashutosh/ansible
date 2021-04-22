@@ -25,9 +25,9 @@
     - name: Set permissions for files
       shell: "/usr/bin/find /var/www/html/ -type f -exec chmod 640 {} \\;"
  
-      #   - name: Copy sample config file
-      #    command: "mv /var/www/html/wp-config-sample.php /var/www/html/wp-config.php "
-      #    become: yes
+    - name: Copy sample config file
+      command: "mv /var/www/html/wp-config-sample.php /var/www/html/wp-config.php "
+      become: yes
  
     - name: Update WordPress config file
       lineinfile:

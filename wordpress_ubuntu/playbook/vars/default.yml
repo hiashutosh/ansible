@@ -1,4 +1,5 @@
 #PHP Setting
+php_modules: [ 'php', 'php-mysql', 'php-gd', 'php-cli', 'php-common' ]
  
 #sudo passwd
 ansible_sudo_pass: "1234"

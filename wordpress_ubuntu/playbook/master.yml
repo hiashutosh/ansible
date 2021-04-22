@@ -1,4 +1,4 @@
-- hosts: ubuntu[1]
+- hosts: ubuntu[0]
   gather_facts: False
   become: true
   connection: ssh
@@ -6,8 +6,8 @@
     - vars/default.yml
   
   roles:
-          #   - apache
+    - apache
     - php 
-          # - mysql
+    - mysql
     - wordpress
 
