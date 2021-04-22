@@ -1,0 +1,20 @@
+#PHP Setting
+php_modules: [ 'php', 'php-mysql', 'php-gd', 'php-cli', 'php-common', 'php-fpm' ]
+ 
+#sudo passwd
+ansible_sudo_pass: "1234"
+
+#MySQL Settings
+mysql_root_password: "password"
+mysql_db: "wpdb"
+mysql_user: "wpuser"
+mysql_password: "password"
+ 
+#HTTP Settings
+http_host: "wp.example.com"
+http_conf: "wp.example.com.conf"
+http_port: "80"
+
+# Wordpress file size
+upload_size: 50M
+

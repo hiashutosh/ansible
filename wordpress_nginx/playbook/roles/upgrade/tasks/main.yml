@@ -1,0 +1,10 @@
+- name: Update Linux
+  command: " apt update -y"
+  become: yes
+
+- name: Upgrade Linux
+  command: "apt upgrade -y"
+  become: yes
+
+
+

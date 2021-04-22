@@ -1,0 +1,14 @@
+- hosts: nginx[2]
+  gather_facts: False
+  become: true
+  connection: ssh
+  vars_files:
+    - vars/default.yml
+  
+  roles:
+     - upgrade      
+     - nginx
+     - php 
+     - mysql
+     - wordpress
+
