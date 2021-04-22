@@ -2,12 +2,12 @@
   apt: name=nginx state=latest
 
 - name: Rename default conf file2
-  command: "rm -rf /etc/nginx/sites-enabled/default /etc/nginx/sites-enabled/wordpress.conf"
+  command: "rm -rf /etc/nginx/sites-enabled/default"
   become: yes
   
 
 - name: Rename default conf file2
-  command: "rm -rf /etc/nginx/sites-available/default /etc/nginx/sites-available/wordpress.conf"
+  command: "rm -rf /etc/nginx/sites-available/default"
   become: yes
 
 
