@@ -1,10 +1,7 @@
 - name: Update Linux
-  command: " apt update -y"
-  become: yes
+  apt: update_cache=yes
 
 - name: Upgrade Linux
-  command: "apt upgrade -y"
-  become: yes
-
+  apt: upgrade=dist force_apt_get=yes
 
 
