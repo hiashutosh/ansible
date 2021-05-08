@@ -1,0 +1,2 @@
+test 2 with GIT_COMMIT $GIT_COMMIT
+
