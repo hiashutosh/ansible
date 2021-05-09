@@ -1,28 +1,17 @@
 - name: Install MySQL Packages
-  apt:
-         name:
-               - mariadb-server
-         update_cache: yes 
-         state: latest
-- name: Install masriadb client
-  apt:
-         name:
-                - mariadb-client
-         state: latest
+  apt: name={{item}} update_cache=yes state= latest
+  loop: "{{sql_packages}}"
 
+# pymysql is needed to configure the MySQL user and databases
 - name: Install pymysql
   apt:
          name:
                 - python3-mysqldb
          state: latest
 
-- name: upgrade
-  apt:
-        name: "*"
-        state: latest        
+     
 - name: Start mysqld service
   service: name=mariadb state=started enabled=yes
-
   
 - name: Set MySQL root Password
   mysql_user:
