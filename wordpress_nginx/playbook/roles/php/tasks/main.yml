@@ -2,9 +2,4 @@
   apt: name={{ item }} update_cache=yes state=latest
   loop: "{{ php_modules }}"
 
-#- name: Install PHP Extensions
-#  command: " apt install php php-mysql php-gd php-cli php-common -y"
-#  become: yes
 
-  #- name: Start NGINX service
-  #  systemd: name=nginx state=started
