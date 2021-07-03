@@ -1,0 +1,22 @@
+region: "us-east-2"
+#VPC
+vpc_name: "Ansible"
+cidr_block: 173.32.0.0/16
+#keyPair
+key_name: ansiblekey
+key_dir: "/home/ubuntu/ansbible/"
+#intances
+image_id: ami-00399ec92321828f5
+instance_type: t2.micro
+ec2_no: 1
+#sg
+sg_name: web
+sg_group: Ansible-SG
+#subnet
+subnet_cidr: 173.32.0.0/20
+route_name: Igw2
+subnet_name: ansible-subnet
+igw_name: ansible-igw
+key_pair: ansible
+count_tag: webserver
+instance_name: Nginx

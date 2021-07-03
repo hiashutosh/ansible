@@ -3,5 +3,3 @@
 
 - name: Upgrade Linux
   apt: upgrade=dist force_apt_get=yes
-
-

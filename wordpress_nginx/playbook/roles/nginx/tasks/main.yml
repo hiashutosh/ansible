@@ -2,35 +2,22 @@
   apt: name=nginx state=latest
 
 - name: Rename default conf file2
-  command: "rm -rf /etc/nginx/sites-enabled/default"
-  become: yes
-  
-
-- name: Rename default conf file2
-  command: "rm -rf /etc/nginx/sites-available/default"
-  become: yes
-
+  file:
+    src: /etc/nginx/sites-available/default
+    state: absent
 
 - name: Configure NGINX for wordpress
   template:
-          src: "files/default"
-          dest: "/etc/nginx/sites-available"
-          owner: root
-          group: root
-          mode: u=rw,g=r,o=r
-
+    src: "files/default"
+    dest: "/etc/nginx/sites-available"
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
 
 - name: Rename default conf file
-  command: " ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/"
-  become: yes
-
-          #- name: Rename default conf file2
-          #  command: "mv /etc/nginx/sites-available/default /etc/nginx/sites-available/ref"
-          #  become: yes
- 
- #- name: Start NGINX 
-  #  command: " nginx -t"
-  #  become: yes
+  file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/
 
 - name: Restart NGINX
   systemd: name=nginx state=restarted enabled=yes

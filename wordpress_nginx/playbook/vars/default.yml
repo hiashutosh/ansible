@@ -2,7 +2,7 @@
 php_modules: [ 'php', 'php-mysql', 'php-gd', 'php-cli', 'php-common', 'php-fpm' ]
 
 #MySQL Packages
-sql_packages: [ 'mariadb-server', 'mariadb-client' ]
+sql_packages: [ 'mariadb-server', 'mariadb-client' , 'python3-mysqldb' ]
 
 #sudo passwd
 ansible_sudo_pass: "1234"

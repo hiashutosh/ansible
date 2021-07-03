@@ -1,0 +1,165 @@
+---
+- name: AWS Scripting
+  hosts: localhost
+  connection: local
+  # secrets.yml file stores aws credentials
+  # varfile.yml stores required variables
+  vars_files:
+    - varsfile.yml
+    - secrets.yml
+  environment:
+    - ansible_python_interpreter: /usr/bin/python3.8
+    - AWS_ACCESS_KEY_ID: "{{ myuser }}"
+    - AWS_SECRET_ACCESS_KEY: "{{ mykey }}"
+
+  gather_facts: false
+
+  tasks:
+
+  - name: Get Info ec2
+    block:
+
+    - name: Get Running instance Info
+      ec2_instance_info:
+        region: "{{ region }}"
+      register: ec2info
+
+    - name: Print info
+      debug: var="ec2info.instances"
+
+    tags: ['always', 'get-info']
+
+  - name: VPC block
+    block:
+
+    - name: Create VPC
+      ec2_vpc_net:
+        name: "{{ vpc_name }}"
+        region: "{{ region }}"
+        cidr_block: "{{ cidr_block }}"
+        state: present
+      register: vpcinfo
+
+    - name: Create VPC subnet
+      ec2_vpc_subnet:
+        state: present
+        vpc_id: "{{ vpcinfo.vpc.id }}"
+        region: "{{ region }}"
+        cidr: "{{ subnet_cidr }}"
+        tags:
+          Name: "{{ subnet_name }}"
+        map_public: yes
+      register: subnet
+
+    - name: create IGW
+      ec2_vpc_igw:
+        vpc_id: "{{ vpcinfo.vpc.id }}"
+        region: "{{ region }}"
+        state: present
+        tags:
+          Name: "{{ igw_name }}"
+      register: igw
+    
+    - name: Route IGW
+      ec2_vpc_route_table:
+        vpc_id: "{{ vpcinfo.vpc.id }}"
+        region: "{{ region }}"
+        subnets:
+          - "{{ subnet.subnet.id }}"
+        routes:
+          - dest: 0.0.0.0/0
+            gateway_id: "{{ igw.gateway_id  }}"
+        tags:
+          Name: "{{ route_name }}"
+
+    - name: create Security Group
+      ec2_group:
+        name: "{{ sg_group }}"
+        description: Security Group
+        vpc_id: "{{ vpcinfo.vpc.id }}"
+        region: "{{ region }}"
+        tags:
+          Name: "{{ sg_name }}"
+        rules:
+          - proto: tcp
+            ports:
+            - 80
+            cidr_ip: 0.0.0.0/0
+            rule_desc: allow all on port 80
+          - proto: tcp
+            ports:
+            - 443
+            cidr_ip: 0.0.0.0/0
+            rule_desc: allow all on port 443
+          - proto: tcp
+            ports:
+            - 22
+            cidr_ip: 0.0.0.0/0
+            rule_desc: allow all on port 22
+      register: sg
+    tags: ['never', 'create-vpc']
+
+  - name: Create ec2 instance
+    block:
+    - name: create ec2
+      ec2:
+        image: "{{ image_id }}"
+        wait: yes
+        region: "{{ region }}"
+        instance_type: "{{ instance_type }}"
+        group_id: "{{ sg.group_id }}"
+        vpc_subnet_id: "{{ subnet.subnet.id }}"
+        count_tag: "{{ count_tag }}"
+        instance_tags:
+          - Name: "{{ intance_name }}"
+        exact_count: "{{ ec2_no }}"
+        key_name: "{{ key_pair }}"
+        user_data: |
+          #!/bin/bash
+
+          sudo apt update -y
+          sudo apt upgrade -y
+          sudo apt install nginx wget -y
+
+          nginx_conf() {
+
+          if [[ -e /etc/nginx/sites-available/default ]];
+          then
+              sudo rm -rf /etc/nginx/sites-available/default
+          fi
+          cat >> /etc/nginx/sites-available/default << EOF    
+          server {
+            listen 80;
+            listen [::]:80;
+              server_name default_server;
+
+              root /var/www/html;
+   
+              index index.php index.html index.nginx-debian.html;
+              server_name _;
+    
+              location / {
+                  try_files \$uri \$uri/ =404;
+
+              }
+          }
+          server {
+            listen 443;
+            listen [::]:443;
+            location / {
+                  proxy_pass http://localhost:80/;
+            }
+          }
+          EOF
+          }
+          nginx_conf
+
+          systemctl start nginx
+          systemctl enable nginx
+          sudo nginx -s reload
+    - name: Get Running instance Info
+      ec2_instance_info:
+        region: "{{ region }}"
+      register: ec2info
+    - name: 
+    tags: ['never', 'create-ec2']
